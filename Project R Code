@@ -634,7 +634,7 @@ print(results_13)
 print(results_16)
 
 
-# Section 4 RS Analysis ---------------------------------------------------
+# Section 5 RS Analysis ---------------------------------------------------
 
 ### In this section, I apply metric scores for each pixel. These metrics are:
 ### Fragmentation, Patch Diversity, Land Use. They are applied to the floodplain
@@ -1816,7 +1816,7 @@ write.csv(avg.pert, "Current Data/FCI/tot_avg_pert.csv")
 save.image(file = "D:/Dropbox/University Work/Dynamics and Ecology/Current data/summary data2.RData")
 
 
-# Section 5 Application of Portfolio analysis.  ---------------------------
+# Section 6 Application of Portfolio analysis.  ---------------------------
 
 #### At this point all classification is complete and are stored in 
 #### RS Image/The Final Maps. The following code sets up the base data to
@@ -2545,7 +2545,7 @@ setcolorder(hab_sample, c("site", "met", "er_p", "sd_p"))
 write.csv(hab_assets, file = ("Current Data/Final_hab_port_data/hab_sites21.csv"))
 
 
-# Section 6 - bootstrapping across scale ----------------------------------
+# Section 7 - bootstrapping across scale ----------------------------------
 
 reach <- list(44, 40, 35, 30, 25, 20, 15, 10, 5, 4, 3, 2, 1)
 
@@ -2826,7 +2826,7 @@ while (t<45){
 write.csv(wgtscale, file = ("D:/Dropbox/publication/11th - portfolio/site_port__wgt_scale.csv"))
 
 
-# Section 7 Cumulative Volatility  ----------------------------------------
+# Section 8 Cumulative Volatility  ----------------------------------------
 #Above, we looked at the change in portfolio volatility as we increased sample grain; here we increase 
 #sample size to see the effect on portfolio volatility 
 
@@ -3688,7 +3688,7 @@ for (g in reach){
   
 }
 
-# Section 8 Final Figures -------------------------------------------------
+# Section 9 Final Figures -------------------------------------------------
 
 ## Several final figures were made here, but others were cleaned in Illustrator. 
 
