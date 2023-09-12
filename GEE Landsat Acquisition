@@ -1,0 +1,65 @@
+// This example demonstrates the use of the Landsat 4, 5, 7 Collection 2,
+// Level 2 QA_PIXEL band (CFMask) to mask unwanted pixels.
+
+function maskL457sr(image) {
+  // Bit 0 - Fill
+  // Bit 1 - Dilated Cloud
+  // Bit 2 - Unused
+  // Bit 3 - Cloud
+  // Bit 4 - Cloud Shadow
+  var qaMask = image.select('QA_PIXEL').bitwiseAnd(parseInt('11111', 2)).eq(0);
+  var saturationMask = image.select('QA_RADSAT').eq(0);
+
+  // Apply the scaling factors to the appropriate bands.
+  var opticalBands = image.select('SR_B.').multiply(0.0000275).add(-0.2);
+  var thermalBand = image.select('ST_B6').multiply(0.00341802).add(149.0);
+
+  // Replace the original bands with the scaled ones and apply the masks.
+  return image.addBands(opticalBands, null, true)
+      .addBands(thermalBand, null, true)
+      .updateMask(qaMask)
+      .updateMask(saturationMask);
+}
+
+// Map the function for LS 7 .
+// var collection = ee.ImageCollection('LANDSAT/LE07/C02/T1_L2')
+// .filter(ee.Filter.or(
+//     ee.Filter.and(ee.Filter.eq('WRS_PATH', 42),         
+//                   ee.Filter.eq('WRS_ROW', 26)),
+//     ee.Filter.and(ee.Filter.eq('WRS_PATH', 41), 
+//                   ee.Filter.eq('WRS_ROW', 26))))
+//         .filterDate('2012-07-01', '2012-09-15')
+//                     .map(maskL457sr);
+
+// Map the function for LS 5 .
+var collection = ee.ImageCollection('LANDSAT/LT05/C02/T1_L2')
+.filter(ee.Filter.or(
+    ee.Filter.and(ee.Filter.eq('WRS_PATH', 42),         
+                  ee.Filter.eq('WRS_ROW', 26)),
+    ee.Filter.and(ee.Filter.eq('WRS_PATH', 41), 
+                  ee.Filter.eq('WRS_ROW', 26)),
+    ee.Filter.and(ee.Filter.eq('WRS_PATH', 41), 
+                  ee.Filter.eq('WRS_ROW', 27))))
+        .filterDate('2008-06-01', '20108-09-15')
+                    .map(maskL457sr);
+
+
+var composite = collection.median()
+  .select(['SR_B1', 'SR_B2', 'SR_B3', 'SR_B4', 'SR_B5', 'SR_B7', 'ST_B6']);
+  
+  print(composite)
+
+// Display the results.
+Map.setCenter(-114.1577, 48.7104,8)
+Map.addLayer(composite, {bands: ['SR_B3', 'SR_B2', 'SR_B1'], min: 0, max: 0.3});
+
+var proj = ee.Projection('EPSG:32612');
+var compositer = composite.reproject(proj, null, 30)
+
+Export.image.toDrive({
+  image: compositer,
+  description: 'flhd_2008_mos',
+    folder: 'RS_image',
+  scale: 30,
+  region: roi
+});
